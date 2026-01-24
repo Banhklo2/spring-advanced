@@ -35,6 +35,11 @@ public class ManagerService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
+        // todo의 작성자(user)가 null이면 권한 체크 불가 -> 예외 처리
+        if (todo.getUser() == null) {
+            throw new InvalidRequestException("일정을 생성한 유저만 담당자를 지정할 수 있습니다.");
+        }
+
         if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
             throw new InvalidRequestException("일정을 생성한 유저만 담당자를 지정할 수 있습니다.");
         }
